@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gunungsewu.database.mapper.ConversationMapper">
+
+	<insert id="saveChat" parameterType="com.gunungsewu.database.entity.Chat">
+  		INSERT INTO chat (chat_id, user_id, type, text) VALUES (#{chatId}, #{userId}, #{type}, #{text})
+  	</insert>
+  	
+	<insert id="newCheckOrder" parameterType="com.gunungsewu.database.entity.CheckOrderChat" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  		INSERT INTO chat_check_order (chat_id, keyword) VALUES (#{chatId}, #{keyword})
+  		<selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+  	</insert>
+  	
+  	<update id="updCheckType" parameterType="com.gunungsewu.database.entity.CheckOrderChat">
+  		UPDATE chat_check_order SET type = #{type}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updCheckPo" parameterType="com.gunungsewu.database.entity.CheckOrderChat">
+  		UPDATE chat_check_order SET po_no = #{poNo}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	
+  	<!-- Reorder -->
+  	<insert id="newReorder" parameterType="com.gunungsewu.database.entity.ReorderChat" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  		INSERT INTO chat_reorder (chat_id, keyword) VALUES (#{chatId}, #{keyword})
+  		<selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+  	</insert>
+  	
+  	<update id="updReorderPo" parameterType="com.gunungsewu.database.entity.ReorderChat">
+  		UPDATE chat_reorder SET po_no = #{poNo}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updReorderNewPo" parameterType="com.gunungsewu.database.entity.ReorderChat">
+  		UPDATE chat_reorder SET new_po = #{newPo}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updReorderStatus" parameterType="com.gunungsewu.database.entity.ReorderChat">
+  		UPDATE chat_reorder SET status = #{status}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	
+  	<!-- Keluhan -->
+  	<insert id="newKeluhan" parameterType="com.gunungsewu.database.entity.KeluhanChat" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  		INSERT INTO chat_keluhan (chat_id, keyword) VALUES (#{chatId}, #{keyword})
+  		<selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+  	</insert>
+  	
+  	<update id="updKelPo" parameterType="com.gunungsewu.database.entity.KeluhanChat">
+  		UPDATE chat_keluhan SET po_no = #{poNo}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updKelOrderId" parameterType="com.gunungsewu.database.entity.KeluhanChat">
+  		UPDATE chat_keluhan SET order_id = #{orderId}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updKelType" parameterType="com.gunungsewu.database.entity.KeluhanChat">
+  		UPDATE chat_keluhan SET type_keluhan = #{typeKeluhan}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updKelDetail" parameterType="com.gunungsewu.database.entity.KeluhanChat">
+  		UPDATE chat_keluhan SET detail_keluhan = #{detailKeluhan}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updKelTicket" parameterType="com.gunungsewu.database.entity.KeluhanChat">
+  		UPDATE chat_keluhan SET ticket_id = #{ticketId}
+  		WHERE id = #{id}
+  	</update>
+
+</mapper>

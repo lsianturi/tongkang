@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gunungsewu.database.mapper.IssueMapper">
+	
+	<resultMap type="Issue" id="IssueResult">
+		<id 	property="id" column="id"/>
+		<result property="msisdn" column="msisdn"/>
+		<result property="userName" column="user_name"/>
+		<result property="userId" column="user_id"/>
+		<result property="chatId" column="chat_id"/>
+		<result property="jtracNo" column="jtrac_no"/>
+		<result property="topic" column="topic"/>
+		<result property="detail" column="detail"/>
+		<result property="attachment1" column="attachment1"/>
+		<result property="attachment2" column="attachment2"/>
+		<result property="attachment3" column="attachment3"/>
+		<result property="status" column="status"/>
+		<result property="createTime" column="createtime"/>
+	</resultMap>
+	
+	<select id="findIssueById" parameterType="int"  resultMap="IssueResult">
+    	select * from Issues where id=#{id}
+  	</select>
+  	
+  	<select id="findIssueByJtracNo" parameterType="int"  resultMap="IssueResult">
+    	select * from Issues where jtrac_no=#{id}
+  	</select>
+  
+  	<!-- <select id="findAllIssues" resultMap="IssueResult">
+    	select * from Issues
+  	</select>
+  	
+  	<insert id="insertIssue" parameterType="Issue">
+  		INSERT INTO STUDENTS(STUD_ID,NAME,EMAIL,DOB) VALUES(#{studId},#{name},#{email},#{dob})
+  	</insert>
+  	
+  	<update id="updateIssue" parameterType="Issue">
+  		UPDATE STUDENTS SET NAME=#{name}, EMAIL=#{email}, DOB=#{dob} WHERE STUD_ID=#{studId}
+  	</update> -->
+  	
+  	
+  	<select id="getIssueTopics" resultType="java.lang.String">
+  		SELECT DISTINCT concat(IFNULL(topic_emoji,''), ',',topic) FROM `topic_pic`
+  	</select>
+  	
+  	<select id="getDefectList" resultType="java.lang.String">
+  		SELECT DISTINCT sub_topic FROM `topic_pic` WHERE topic = #{topic}
+  	</select>
+  	
+  	<!-- <update id="addUserForIssue" parameterType="Issue">
+  		REPLACE INTO issueusers (userId, status) VALUES (#{id}, #{status})
+  	</update>
+  	
+  	<update id="deleteUserForIssue" parameterType="java.lang.Integer">
+  		DELETE FROM IssueUsers WHERE userId=#{userId}
+  	</update> -->
+  	
+  	<!-- <select id="getUserStatusForIssue" parameterType="java.lang.Integer" resultType="int">
+  		Select status FROM IssueUsers WHERE userId= #{userId}
+  	</select> -->
+  	
+  	<select id="getLastIssueStatus" parameterType="int" resultMap="IssueResult">
+  		SELECT i.detail, IF(j.`status`=1, 'Logged', IF(j.status=3,'Execution', IF(j.`status`=4,'Confirmation-Request', IF(j.`status`=5,'Confirmation-Response','Closed')))) as `topic`, 
+  		i.jtrac_no, j.time_stamp as createtime
+         		FROM `issues` i
+         		INNER JOIN jtrac2_uat.items j ON j.sequence_num = i.jtrac_no
+         		WHERE i.user_id = #{userId} AND j.space_id = 1
+         		ORDER BY i.id DESC LIMIT 5
+  	</select>
+  	
+  	<update id="updateUserChatId" parameterType="java.util.Map">
+  		UPDATE Users SET user_id= #{chatId}, name = #{name} WHERE msisdn= #{msisdn}
+  	</update>
+  	
+  	<insert id="addIssue" parameterType="Issue" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+  		INSERT INTO Issues (user_id, chat_id, msisdn, user_name) VALUES (#{userId}, #{chatId}, #{msisdn}, #{userName})
+  		<selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+  	</insert>
+  	
+  	<update id="updateIssue" parameterType="Issue">
+  		UPDATE Issues SET store_location = #{storeLocation}, topic = #{topic}, sub_topic = #{subTopic},
+	  		detail = #{detail}, attachment1 = #{attachment1}, attachment2 = #{attachment2}, attachment3 = #{attachment3},  jtrac_no= #{jtracNo}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	
+</mapper>

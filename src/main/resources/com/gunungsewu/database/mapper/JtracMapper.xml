@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gunungsewu.database.mapper.JtracMapper">
+	
+	<resultMap type="Jtrac" id="JtracResult">
+		<result property="host" column="host"/>
+		<result property="loginUrl" column="login_url"/>
+		<result property="authenticateUrl" column="authenticate_url"/>
+		<result property="appUrl" column="app_url"/>
+		<result property="ticketUrl" column="ticket_url"/>
+		<result property="username" column="jtrac_user"/>
+		<result property="password" column="jtrac_password"/>
+	</resultMap>
+	
+	<resultMap type="Topic" id="TopicResult">
+		<id property="id" column="id"/>
+		<result property="topic" column="topic"/>
+		<result property="subTopic" column="sub_topic"/>
+		<result property="picUser" column="pic_user"/>
+		<result property="ccUser" column="cc_user"/>
+		<result property="topicJtracId" column="topic_jtrac_id"/>
+	</resultMap>
+	
+	<select id="getJtracUser" resultMap="JtracResult">
+    	select * from jtrac limit 1
+  	</select>
+  	
+  	<select id="getTopic" parameterType="java.util.Map"  resultMap="TopicResult">
+    	SELECT DISTINCT * from topic_pic WHERE topic = #{topic} 
+    	<if test="subTopic != null">
+  			AND sub_topic = #{subTopic}
+  		</if>
+  	</select>
+  	
+</mapper>

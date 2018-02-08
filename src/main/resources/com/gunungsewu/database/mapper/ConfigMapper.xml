@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gunungsewu.database.mapper.ConfigMapper">
+
+	<resultMap type="WsConfig" id="WsConfigResult">
+		<result property="wsName" column="ws_name"/>
+		<result property="wsUrl" column="ws_url"/>
+	</resultMap>
+	
+	<resultMap type="MQConfig" id="MQConfigResult">
+		<result property="hostname" column="hostname"/>
+		<result property="port" column="port"/>
+		<result property="queueOrderFromBot" column="order_from_bot_queue"/>
+		<result property="queueOrderToBot" column="order_to_bot_queue"/>
+		<result property="queueComplaintFromBot" column="complain_from_bot_queue"/>
+		<result property="queueComplaintToBot" column="complaint_to_bot_queue"/>
+	</resultMap>
+	
+	<resultMap type="MQName" id="MQNameResult">
+		<result property="id" column="queue_id"/>
+		<result property="name" column="queue_name"/>
+	</resultMap>
+	
+	<resultMap type="NLUser" id="XUser">
+		<result property="chatId" column="user_id"/>
+		<result property="name" column="name"/>
+		<result property="msisdn" column="msisdn"/>
+	</resultMap>
+	
+	<select id="getWsConfig" parameterType="java.lang.String" resultMap="WsConfigResult">
+    	select * from ws_config where ws_name = #{value}
+  	</select>
+  	
+  	<select id="getUser" parameterType="java.lang.String" resultMap="XUser">
+    	select user_id, name, msisdn from users where msisdn = #{value}
+  	</select>
+  	
+  	<select id="getUserByChatId" parameterType="java.lang.Integer" resultMap="XUser">
+    	select user_id, name, msisdn from users where user_id = #{value}
+  	</select>
+  	
+  	<update id="updateUserChatId" parameterType="com.gunungsewu.database.entity.NLUser">
+  		UPDATE users SET user_id = #{chatId}, name = #{name}
+  		WHERE msisdn = #{msisdn}
+  	</update>
+  	
+  	<select id="getMQConfig" resultMap="MQConfigResult">
+    	select * from mq_config limit 1
+  	</select>
+  	
+  	<select id="getQueueNames" resultMap="MQNameResult" >
+    	select * from mq_name
+  	</select>
+
+</mapper>
